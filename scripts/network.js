@@ -55,12 +55,10 @@ class ServerConnection {
     }
 
 _endpoint() {
-    // If WEBSOCKET_URL is defined, use it (append /webrtc or /fallback)
     if (window.WEBSOCKET_URL) {
         const suffix = window.isRtcSupported ? '/webrtc' : '/fallback';
         return window.WEBSOCKET_URL + suffix;
     }
-    // fallback to original behaviour (same origin)
     const protocol = location.protocol.startsWith('https') ? 'wss' : 'ws';
     const webrtc = window.isRtcSupported ? '/webrtc' : '/fallback';
     return protocol + '://' + location.host + '/server' + webrtc;

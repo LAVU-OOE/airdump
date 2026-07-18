@@ -1,11 +1,11 @@
 var CACHE_NAME = 'airdump-cache-v1.0';
 var urlsToCache = [
-  '/',
-  '/styles.css',
-  '/scripts/network.js',
-  '/scripts/ui.js',
-  '/sounds/blop.mp3',
-  '/images/favicon-96x96.png'
+  './',
+  './styles.css',
+  './scripts/network.js',
+  './scripts/ui.js',
+  './sounds/blop.mp3',
+  './images/favicon-96x96.png'
 ];
 
 self.addEventListener('install', function(event) {
@@ -35,9 +35,7 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          return true
-        }).map(function(cacheName) {
+        cacheNames.map(function(cacheName) {
           return caches.delete(cacheName);
         })
       );
