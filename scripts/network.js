@@ -520,9 +520,21 @@ class Events {
 
 // ========== WebRTC configuration ==========
 RTCPeer.config = {
-    'iceServers': [{
-        urls: 'stun:stun.l.google.com:19302'
-    }]
+    'iceServers': [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        // Add a free TURN server (example – you can use your own or a public one)
+        {
+            urls: 'turn:openrelay.metered.ca:80',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
+    ]
 };
 
 console.log('network.js: loaded, Events defined');

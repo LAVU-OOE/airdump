@@ -38,27 +38,25 @@ class Localization {
     }
 
     static getSupportedOrDefaultLocales(locales) {
-        // get generic locales not included in locales
-        // ["en-us", "de-CH", "fr"] --> ["en", "de"]
         let localesGeneric = locales
             .map(locale => locale.split("-")[0])
             .filter(locale => locales.indexOf(locale) === -1);
 
-        // If there is no perfect match for browser locales, try generic locales first before resorting to the default locale
         return locales.find(Localization.localeIsSupported)
             || localesGeneric.find(Localization.localeIsSupported)
             || Localization.defaultLocale;
     }
 
-    async setInitialTranslation() {
+    // ---------- FIX: make this static ----------
+    static async setInitialTranslation() {
         await Localization.fetchDefaultTranslations();
-        await Localization.setTranslation(Localization.initialLocale)
+        await Localization.setTranslation(Localization.initialLocale);
     }
 
     static async setTranslation(locale) {
         if (!locale) locale = Localization.systemLocale;
 
-        await Localization.fetchTranslations(locale)
+        await Localization.fetchTranslations(locale);
         await Localization.translatePage();
 
         if (Localization.localeIsRtl(locale)) {
@@ -70,13 +68,14 @@ class Localization {
 
         Localization.$htmlRoot.setAttribute('lang', locale);
 
-
         console.log("Page successfully translated",
             `System language: ${Localization.systemLocale}`,
             `Selected language: ${locale}`
         );
 
-        Events.fire("translation-loaded");
+        if (typeof Events !== 'undefined') {
+            Events.fire("translation-loaded");
+        }
     }
 
     static async fetchDefaultTranslations() {
@@ -92,6 +91,7 @@ class Localization {
 
         Localization.locale = newLocale;
         Localization.translations = newTranslations;
+        return true;
     }
 
     static getLocale() {
@@ -102,16 +102,19 @@ class Localization {
         return !localStorage.getItem('language_code');
     }
 
+    // ---------- FIX: remove 'no-cors' mode ----------
     static async fetchTranslationsFor(newLocale) {
-        const response = await fetch(`lang/${newLocale}.json`, {
-            method: 'GET',
-            credentials: 'include',
-            mode: 'no-cors',
-        });
-
-        if (response.redirected === true || response.status !== 200) return false;
-
-        return await response.json();
+        try {
+            const response = await fetch(`lang/${newLocale}.json`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (response.status !== 200) return false;
+            return await response.json();
+        } catch (e) {
+            console.warn('Failed to fetch translations for', newLocale, e);
+            return false;
+        }
     }
 
     static async translatePage() {
@@ -131,7 +134,7 @@ class Localization {
             else {
                 element.setAttribute(attr, Localization.getTranslation(key, attr));
             }
-        })
+        });
     }
 
     static getTranslationFromTranslationsObj(translationObj, key, attr) {
@@ -140,8 +143,7 @@ class Localization {
             const keys = key.split(".");
 
             for (let i = 0; i < keys.length - 1; i++) {
-                // iterate into translation object until last layer
-                translationObj = translationObj[keys[i]]
+                translationObj = translationObj[keys[i]];
             }
 
             let lastKey = keys[keys.length - 1];
@@ -166,7 +168,6 @@ class Localization {
             if (!translation.includes(`{{${j}}}`)) {
                 throw new Error(`Translation misses data placeholder: ${j}`);
             }
-            // Add data to translation
             translation = translation.replace(`{{${j}}}`, data[j]);
         }
         return translation;
@@ -184,20 +185,15 @@ class Localization {
             translation = Localization.addDataToTranslation(translation, data);
         }
         catch (e) {
-            // Log warnings and help calls
             console.warn(e);
             Localization.logTranslationMissingOrBroken(key, attr, data, useDefault);
             Localization.logHelpCallKey(key, attr);
             Localization.logHelpCall();
 
             if (useDefault || Localization.currentLocaleIsDefault()) {
-                // Is default locale already
-                // Use empty string as translation
-                translation = ""
+                translation = "";
             }
             else {
-                // Is not default locale yet
-                // Get translation for default language with same arguments
                 console.log(`Using default language ${Localization.defaultLocale.toUpperCase()} instead.`);
                 translation = this.getTranslation(key, attr, data, true);
             }
