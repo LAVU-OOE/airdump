@@ -230,12 +230,10 @@
                     window.blop.play().catch(() => {}); // ✅ audio fix
                 });
                 this._filesQueue = [];
-                // 🔥 ROOT FIX: Initialisierung für Duplikatserkennung
                 this._lastFileKey = null;
             }
 
             _nextFile(nextFile) {
-                // 🔥 ROOT FIX: Duplikate anhand Name + Größe erkennen und ignorieren
                 if (nextFile) {
                     const key = nextFile.name + nextFile.size;
                     if (this._lastFileKey === key) {
@@ -352,7 +350,7 @@
                     this.$text.textContent = text;
                 }
                 this.show();
-                window.blop.play().catch(() => {}); // ✅ audio fix
+                window.blop.play().catch(() => {});
             }
 
             _onCopy() {
@@ -375,88 +373,28 @@
             }
         }
 
-        // -------- Notifications --------
+        // ============================================================
+        // 🔥 NEU: Benachrichtigungen OHNE Browser‑Blockade
+        // – Immer Toast verwenden, keine Notification.requestPermission
+        // ============================================================
         class Notifications {
             constructor() {
-                if (!('Notification' in window)) return;
-
-                if (Notification.permission !== 'granted') {
-                    this.$button = $('notification');
-                    this.$button.removeAttribute('hidden');
-                    this.$button.addEventListener('click', e => this._requestPermission());
-                }
+                // Keine Berechtigungsanfrage, kein Button, kein Block – nur Toasts
                 Events.on('text-received', e => this._messageNotification(e.detail.text));
                 Events.on('file-received', e => this._downloadNotification(e.detail.name));
             }
 
-            _requestPermission() {
-                Notification.requestPermission(permission => {
-                    if (permission !== 'granted') {
-                        Events.fire('notify-user', Notifications.PERMISSION_ERROR || 'Error');
-                        return;
-                    }
-                    this._notify('Even more snappy sharing!');
-                    this.$button.setAttribute('hidden', 1);
-                });
-            }
-
-            _notify(message, body, closeTimeout = 20000) {
-                const config = {
-                    body: body,
-                    icon: '/images/logo_transparent_128x128.png',
-                }
-                let notification;
-                try {
-                    notification = new Notification(message, config);
-                } catch (e) {
-                    if (!serviceWorker || !serviceWorker.showNotification) return;
-                    notification = serviceWorker.showNotification(message, config);
-                }
-
-                if (closeTimeout) {
-                    setTimeout(_ => notification.close(), closeTimeout);
-                }
-
-                return notification;
-            }
-
             _messageNotification(message) {
-                if (isURL(message)) {
-                    const notification = this._notify(message, 'Click to open link');
-                    this._bind(notification, e => window.open(message, '_blank', null, true));
-                } else {
-                    const notification = this._notify(message, 'Click to copy text');
-                    this._bind(notification, e => this._copyText(message, notification));
-                }
+                // Zeige die Nachricht als Toast (In‑App)
+                Events.fire('notify-user', message);
             }
 
             _downloadNotification(message) {
-                const notification = this._notify(message, 'Click to download');
-                if (!window.isDownloadSupported) return;
-                this._bind(notification, e => this._download(notification));
-            }
-
-            _download(notification) {
-                document.querySelector('x-dialog [download]').click();
-                notification.close();
-            }
-
-            _copyText(message, notification) {
-                notification.close();
-                if (!document.copy(message)) return;
-                this._notify('Copied text to clipboard');
-            }
-
-            _bind(notification, handler) {
-                if (notification.then) {
-                    notification.then(e => serviceWorker.getNotifications().then(notifications => {
-                        serviceWorker.addEventListener('notificationclick', handler);
-                    }));
-                } else {
-                    notification.onclick = handler;
-                }
+                // Zeige den Dateinamen als Toast
+                Events.fire('notify-user', '📥 Datei empfangen: ' + message);
             }
         }
+        // ============================================================
 
         // -------- NetworkStatusUI --------
         class NetworkStatusUI {
@@ -504,7 +442,7 @@
                     const sendTextDialog = new SendTextDialog();
                     const receiveTextDialog = new ReceiveTextDialog();
                     const toast = new Toast();
-                    const notifications = new Notifications();
+                    const notifications = new Notifications(); // ← keine Browser‑Blockade mehr
                     const networkStatusUI = new NetworkStatusUI();
                     const webShareTargetUI = new WebShareTargetUI();
                 });
@@ -616,13 +554,6 @@
             init();
             animate();
         });
-
-        // -------- Notifications permission error message --------
-        Notifications.PERMISSION_ERROR = `
-            Notifications permission has been blocked 
-            as the user has dismissed the permission prompt several times. 
-            This can be reset in Page Info 
-            which can be accessed by clicking the lock icon next to the URL.`;
 
         // -------- Safari audio hack --------
         document.body.onclick = e => {
