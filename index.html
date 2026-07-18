@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAVU-Airdump // ASZ Asten</title>
+    <style>
+        body { 
+            font-family: 'Courier New', Courier, monospace; 
+            max-width: 550px; 
+            margin: 2rem auto; 
+            padding: 0 1rem; 
+            background: #1e222b; 
+            color: #4af626; /* Classic industrial terminal green */
+        }
+        .card { 
+            background: #282c34; 
+            padding: 1.5rem; 
+            border-radius: 6px; 
+            border: 2px solid #3f444a;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            margin-bottom: 1.2rem; 
+        }
+        .card h3 { 
+            margin-top: 0; 
+            color: #fff; 
+            border-bottom: 1px dashed #3f444a; 
+            padding-bottom: 0.5rem;
+        }
+        .dumpster { 
+            padding: 0.75rem; 
+            border: 1px dashed #4af626; 
+            border-radius: 4px; 
+            margin: 0.5rem 0; 
+            background: #21252b; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .dumpster:hover { 
+            background: #2b313a; 
+            border-style: solid;
+        }
+        button { 
+            background: #ff5555; /* Heavy machinery warning red */
+            color: white; 
+            border: none; 
+            padding: 0.6rem 1.2rem; 
+            font-family: inherit;
+            font-weight: bold;
+            border-radius: 4px; 
+            cursor: pointer; 
+            box-shadow: 0 2px 0 #b33636;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+        button:disabled { 
+            background: #5c6370; 
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        input[type="file"] { display: none; }
+        .warning-box {
+            border: 1px solid #e5c07b;
+            color: #e5c07b;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>⚠️ LAVU-Airdump v1.0 // ASZ-Asten</h2>
+    <div class="warning-box">
+        NOTICE: Direct P2P data clearance portal. Do not throw hazardous digital waste into unapproved bins.
+    </div>
+    
+    <div class="card">
+        <h3>Your License Plate: <span id="my-id" style="color: #e5c07b;">Scanning...</span></h3>
+        <p style="color: #abb2bf; font-size: 0.9rem;">Open this radio link on another station to begin dumping freight.</p>
+    </div>
+
+    <div class="card">
+        <h3>Open Dumpsters in Range</h3>
+        <div id="peers-list" style="color: #abb2bf;">No other yard vehicles detected.</div>
+    </div>
+
+    <!-- Hidden native loader -->
+    <input type="file" id="file-input">
+
+    <script>
+        // Utilizing the external infrastructure for signal routing
+        const SIGNALING_SERVER = 'wss://pairdrop.net/ws'; 
+        let ws;
+        let myId = "ASZ-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        let rtcConnections = {};
+
+        const rtcConfig = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        };
+
+        function init() {
+            document.getElementById('my-id').textContent = myId;
+            connectSignaling();
+            document.getElementById('file-input').addEventListener('change', handleFileSelect);
+        }
+
+        function connectSignaling() {
+            ws = new WebSocket(SIGNALING_SERVER);
+
+            ws.onopen = () => {
+                console.log("[LAVU-AIRDUMP] Connected to signaling grid.");
+                ws.send(JSON.stringify({ type: 'join', id: myId }));
+            };
+
+            ws.onmessage = async (event) => {
+                const msg = JSON.parse(event.data);
+                
+                switch (msg.type) {
+                    case 'peers-list':
+                        updatePeersList(msg.peers.filter(id => id !== myId));
+                        break;
+                    case 'signal':
+                        handleSignal(msg.from, msg.signal);
+                        break;
+                }
+            };
+
+            ws.onclose = () => {
+                console.log("[LAVU-AIRDUMP] Signal dropped. Reconnecting transmission line...");
+                setTimeout(connectSignaling, 3000);
+            };
+        }
+
+        function updatePeersList(peerIds) {
+            const list = document.getElementById('peers-list');
+            if (peerIds.length === 0) {
+                list.textContent = 'No other yard vehicles detected.';
+                return;
+            }
+            list.innerHTML = '';
+            peerIds.forEach(id => {
+                const div = document.createElement('div');
+                div.className = 'dumpster';
+                div.innerHTML = `<span>Station: <strong style="color: #fff;">${id}</strong></span> <button onclick="selectPeer('${id}')">DUMP CARGO</button>`;
+                list.appendChild(div);
+            });
+        }
+
+        let targetPeerId = null;
+        function selectPeer(id) {
+            targetPeerId = id;
+            document.getElementById('file-input').click();
+        }
+
+        async function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file || !targetPeerId) return;
+
+            console.log(`[LAVU-AIRDUMP] Compacting cargo: ${file.name} (${file.size} bytes)`);
+            const pc = createPeerConnection(targetPeerId);
+            const channel = pc.createDataChannel('file-transfer');
+            setupDataChannel(channel, file);
+
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            ws.send(JSON.stringify({
+                type: 'signal',
+                to: targetPeerId,
+                from: myId,
+                signal: { sdp: pc.localDescription }
+            }));
+        }
+
+        function createPeerConnection(peerId) {
+            if (rtcConnections[peerId]) return rtcConnections[peerId];
+
+            const pc = new RTCPeerConnection(rtcConfig);
+            rtcConnections[peerId] = pc;
+
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    ws.send(JSON.stringify({
+                        type: 'signal',
+                        to: peerId,
+                        from: myId,
+                        signal: { candidate: event.candidate }
+                    }));
+                }
+            };
+
+            pc.ondatachannel = (event) => {
+                setupInboundDataChannel(event.channel);
+            };
+
+            return pc;
+        }
+
+        async function handleSignal(fromPeerId, signal) {
+            const pc = createPeerConnection(fromPeerId);
+
+            if (signal.sdp) {
+                await pc.setRemoteDescription(new RTCSessionDescription(signal.sdp));
+                if (signal.sdp.type === 'offer') {
+                    const answer = await pc.createAnswer();
+                    await pc.setLocalDescription(answer);
+                    ws.send(JSON.stringify({
+                        type: 'signal',
+                        to: fromPeerId,
+                        from: myId,
+                        signal: { sdp: pc.localDescription }
+                    }));
+                }
+            } else if (signal.candidate) {
+                try {
+                    await pc.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                } catch (e) {
+                    console.error("[LAVU-AIRDUMP] Structural fault loading candidate integration", e);
+                }
+            }
+        }
+
+        function setupDataChannel(channel, file) {
+            channel.onopen = () => {
+                console.log("[LAVU-AIRDUMP] Pipeline open. Beginning payload tipping sequence.");
+                channel.send(JSON.stringify({ name: file.name, size: file.size, type: file.type }));
+                
+                const chunkSize = 16384; 
+                const reader = new FileReader();
+                let offset = 0;
+
+                reader.onload = (e) => {
+                    channel.send(e.target.result);
+                    offset += e.target.result.byteLength;
+                    if (offset < file.size) {
+                        readNextChunk();
+                    } else {
+                        console.log("[LAVU-AIRDUMP] Cargo successfully tipped over the fence.");
+                    }
+                };
+
+                const readNextChunk = () => {
+                    const slice = file.slice(offset, offset + chunkSize);
+                    reader.readAsArrayBuffer(slice);
+                };
+
+                readNextChunk();
+            };
+        }
+
+        function setupInboundDataChannel(channel) {
+            let fileInfo = null;
+            let receivedBuffers = [];
+            let receivedSize = 0;
+
+            channel.onmessage = (event) => {
+                if (typeof event.data === 'string') {
+                    fileInfo = JSON.parse(event.data);
+                    console.log(`[LAVU-AIRDUMP] Inbound payload detected: ${fileInfo.name}`);
+                } else {
+                    receivedBuffers.push(event.data);
+                    receivedSize += event.data.byteLength;
+
+                    if (receivedSize === fileInfo.size) {
+                        console.log("[LAVU-AIRDUMP] Processing complete sorting stack. Downloading.");
+                        const blob = new Blob(receivedBuffers, { type: fileInfo.type });
+                        const url = URL.createObjectURL(blob);
+                        
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileInfo.name;
+                        a.click();
+                        
+                        receivedBuffers = [];
+                        fileInfo = null;
+                    }
+                }
+            };
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
