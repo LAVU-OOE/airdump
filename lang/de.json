@@ -1,66 +1,58 @@
 {
-  "about": {
-    "title": "Airdump",
-    "title_title": "Airdump",
-    "subtitle": "Der einfachste Weg, Dateien zwischen Geräten zu teilen.",
-    "github": "Airdump auf Github",
-    "github_title": "Airdump auf Github",
-    "donate": "Unterstütze Airdump",
-    "donate_title": "Unterstütze Airdump",
-    "tweet": "Tweete über Airdump",
-    "tweet_title": "Tweete über Airdump",
-    "faq": "Häufig gestellte Fragen",
-    "faq_title": "Häufig gestellte Fragen"
-  },
-  "header": {
-    "about": "Über Airdump",
-    "about_title": "Über Airdump",
-    "notifications": "Benachrichtigungen aktivieren",
-    "notifications_title": "Benachrichtigungen aktivieren",
-    "install": "Airdump installieren",
-    "install_title": "Airdump installieren"
-  },
-  "footer": {
-    "description": "Der einfachste Weg, Daten zwischen Geräten zu übertragen.",
-    "discovery": "Erlaube mir, entdeckt zu werden von: Allen in diesem Netzwerk."
-  },
+  "about": "Airdump",
+  "about_title": "Airdump",
+  "about_subtitle": "Der einfachste Weg, Dateien zwischen Geräten zu teilen.",
+  "about_github": "Airdump auf Github",
+  "about_github_title": "Airdump auf Github",
+  "about_donate": "Unterstütze Airdump",
+  "about_donate_title": "Unterstütze Airdump",
+  "about_tweet": "Tweete über Airdump",
+  "about_tweet_title": "Tweete über Airdump",
+  "about_faq": "Häufig gestellte Fragen",
+  "about_faq_title": "Häufig gestellte Fragen",
+
+  "header_about": "Über Airdump",
+  "header_about_title": "Über Airdump",
+  "header_notifications": "Benachrichtigungen aktivieren",
+  "header_notifications_title": "Benachrichtigungen aktivieren",
+  "header_install": "Airdump installieren",
+  "header_install_title": "Airdump installieren",
+
+  "footer_description": "Der einfachste Weg, Daten zwischen Geräten zu übertragen.",
+  "footer_discovery": "Erlaube mir, entdeckt zu werden von: Allen in diesem Netzwerk.",
+
   "no_peers": "Öffne Airdump auf anderen Geräten, um Dateien zu senden.",
-  "instructions": {
-    "desktop": "Klicke, um Dateien zu senden oder verwende Rechtsklick für eine Nachricht.",
-    "mobile": "Tippe, um Dateien zu senden oder langes Tippen für eine Nachricht."
-  },
-  "receive": {
-    "title": "Datei erhalten",
-    "title_title": "Datei erhalten",
-    "filename": "Dateiname",
-    "filename_text": "Dateiname",
-    "filesize": "Dateigröße",
-    "filesize_text": "Dateigröße",
-    "download": "Herunterladen",
-    "download_text": "Herunterladen",
-    "ignore": "Ignorieren",
-    "ignore_text": "Ignorieren"
-  },
-  "sendtext": {
-    "title": "Nachricht senden",
-    "title_title": "Nachricht senden",
-    "placeholder": "Nachricht senden",
-    "placeholder_placeholder": "Nachricht senden",
-    "send": "Senden",
-    "send_text": "Senden",
-    "cancel": "Abbrechen",
-    "cancel_text": "Abbrechen"
-  },
-  "receivetext": {
-    "title": "Nachricht erhalten",
-    "title_title": "Nachricht erhalten",
-    "copy": "Kopieren",
-    "copy_text": "Kopieren",
-    "close": "Schließen",
-    "close_text": "Schließen"
-  },
-  "toast": {
-    "completed": "Dateiübertragung abgeschlossen",
-    "completed_text": "Dateiübertragung abgeschlossen"
-  }
+
+  "instructions_desktop": "Klicke, um Dateien zu senden oder verwende Rechtsklick für eine Nachricht.",
+  "instructions_mobile": "Tippe, um Dateien zu senden oder langes Tippen für eine Nachricht.",
+
+  "receive_title": "Datei erhalten",
+  "receive_title_title": "Datei erhalten",
+  "receive_filename": "Dateiname",
+  "receive_filename_text": "Dateiname",
+  "receive_filesize": "Dateigröße",
+  "receive_filesize_text": "Dateigröße",
+  "receive_download": "Herunterladen",
+  "receive_download_text": "Herunterladen",
+  "receive_ignore": "Ignorieren",
+  "receive_ignore_text": "Ignorieren",
+
+  "sendtext_title": "Nachricht senden",
+  "sendtext_title_title": "Nachricht senden",
+  "sendtext_placeholder": "Nachricht senden",
+  "sendtext_placeholder_placeholder": "Nachricht senden",
+  "sendtext_send": "Senden",
+  "sendtext_send_text": "Senden",
+  "sendtext_cancel": "Abbrechen",
+  "sendtext_cancel_text": "Abbrechen",
+
+  "receivetext_title": "Nachricht erhalten",
+  "receivetext_title_title": "Nachricht erhalten",
+  "receivetext_copy": "Kopieren",
+  "receivetext_copy_text": "Kopieren",
+  "receivetext_close": "Schließen",
+  "receivetext_close_text": "Schließen",
+
+  "toast_completed": "Dateiübertragung abgeschlossen",
+  "toast_completed_text": "Dateiübertragung abgeschlossen"
 }
