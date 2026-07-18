@@ -156,36 +156,60 @@
     </svg>
 
     <!-- Scripts -->
-    <script>
-        window.WEBSOCKET_URL = 'wss://airdump-api.lavu-ooe.workers.dev';
-    </script>
-    <script src="scripts/network.js"></script>
-    <script src="scripts/ui.js"></script>
-    <script src="scripts/localization.js"></script>
-    <script>
-        // Language selector logic
-        document.getElementById('languageSelector').addEventListener('click', function(e) {
-            e.preventDefault();
-            const dropdown = document.getElementById('languageDropdown');
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-        });
+<!-- Scripts -->
+<script>
+    window.WEBSOCKET_URL = 'wss://airdump-api.lavu-ooe.workers.dev';
+</script>
 
-        document.querySelectorAll('#languageDropdown a').forEach(function(link) {
-            link.addEventListener('click', function(e) {
+<!-- Load dependencies in order -->
+<script src="scripts/network.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/localization.js"></script>
+
+<!-- Initialize localization with error handling -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Localization class is loaded
+        if (typeof Localization === 'undefined') {
+            console.warn('Localization not loaded – using default language.');
+            return;
+        }
+        try {
+            Localization.setInitialTranslation()
+                .then(() => console.log('Localization ready'))
+                .catch(err => console.warn('Localization init error:', err));
+        } catch (e) {
+            console.warn('Localization init error:', e);
+        }
+    });
+
+    // Language selector toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const selector = document.getElementById('languageSelector');
+        const dropdown = document.getElementById('languageDropdown');
+        if (selector && dropdown) {
+            selector.addEventListener('click', function(e) {
                 e.preventDefault();
-                const lang = this.getAttribute('data-lang');
-                localStorage.setItem('language_code', lang);
-                Localization.setTranslation(lang).then(function() {
-                    document.getElementById('languageDropdown').style.display = 'none';
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            });
+            dropdown.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    localStorage.setItem('language_code', lang);
+                    if (typeof Localization !== 'undefined') {
+                        Localization.setTranslation(lang).then(function() {
+                            dropdown.style.display = 'none';
+                        });
+                    } else {
+                        // Reload page to apply language (fallback)
+                        location.reload();
+                    }
                 });
             });
-        });
-
-        // Initialize localization
-        document.addEventListener('DOMContentLoaded', function() {
-            Localization.setInitialTranslation();
-        });
-    </script>
+        }
+    });
+</script>
 
     <style>
         /* Simple dropdown styling */
