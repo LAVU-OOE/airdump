@@ -230,10 +230,21 @@
                     window.blop.play().catch(() => {}); // ✅ audio fix
                 });
                 this._filesQueue = [];
+                // 🔥 ROOT FIX: Initialisierung für Duplikatserkennung
+                this._lastFileKey = null;
             }
 
             _nextFile(nextFile) {
-                if (nextFile) this._filesQueue.push(nextFile);
+                // 🔥 ROOT FIX: Duplikate anhand Name + Größe erkennen und ignorieren
+                if (nextFile) {
+                    const key = nextFile.name + nextFile.size;
+                    if (this._lastFileKey === key) {
+                        console.log('[FIX] Duplicate file ignored - no popup flood.');
+                        return;
+                    }
+                    this._lastFileKey = key;
+                    this._filesQueue.push(nextFile);
+                }
                 if (this._busy) return;
                 this._busy = true;
                 const file = this._filesQueue.shift();

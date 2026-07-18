@@ -213,6 +213,8 @@ class Peer {
         this._onDownloadProgress(1);
         this._reader = null;
         this._busy = false;
+        // 🔥 ROOT FIX: Warteschlange leeren, damit bei einem versehentlichen Reconnect nichts erneut gesendet wird
+        this._filesQueue = [];
         this._dequeueFile();
         Events.fire('notify-user', 'File transfer completed.');
     }
@@ -298,8 +300,12 @@ class RTCPeer extends Peer {
 
     _onChannelClosed() {
         console.log('RTC: channel closed', this._peerId);
-        // FIX: use this._isCaller (was this.isCaller)
         if (!this._isCaller) return;
+        // 🔥 ROOT FIX: Kein Reconnect, wenn gerade eine Datei übertragen wird oder noch in der Warteschlange liegt
+        if (this._busy || (this._filesQueue && this._filesQueue.length > 0)) {
+            console.log('[FIX] Reconnect suppressed - transfer still active or queued.');
+            return;
+        }
         this._connect(this._peerId, true);
     }
 

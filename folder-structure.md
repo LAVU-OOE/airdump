@@ -1,5 +1,5 @@
 ```
-├── 📄 folder-structure
+├── 📜 folder-structure.md
 ├── 📁 images
 │ ├── 🖼️ android-chrome-192x192.png
 │ ├── 🖼️ android-chrome-512x512.png
@@ -12,7 +12,7 @@
 │ ├── 🖼️ logo_white_512x512.png
 │ ├── 🖼️ mstile-150x150.png
 │ ├── 🖼️ safari-pinned-tab.svg
-│ ├── 📄 airdump-graphics.sketch
+│ ├── 📄 snapdrop-graphics.sketch
 │ ├── 🖼️ twitter-stream.jpg
 ├── 📄 index.html
 ├── 📁 lang
@@ -20,6 +20,7 @@
 │ ├── 🗂️ en.json
 ├── 📄 LICENSE
 ├── 🗂️ manifest.json
+├── 📜 raw.usercontent.md
 ├── 📁 scripts
 │ ├── 🟨 localization.js
 │ ├── 🟨 network.js
