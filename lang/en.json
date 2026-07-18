@@ -1,0 +1,45 @@
+{
+  "about": {
+    "title": "Airdump",
+    "subtitle": "The easiest way to transfer files across devices.",
+    "github": "Airdump on Github",
+    "donate": "Contribute to keep Airdump free",
+    "tweet": "Tweet about Airdump",
+    "faq": "Frequently asked questions"
+  },
+  "header": {
+    "about": "About Airdump",
+    "notifications": "Enable Notifications",
+    "install": "Install Airdump"
+  },
+  "footer": {
+    "description": "The easiest way to transfer data across devices.",
+    "discovery": "Allow me to be discovered by: Everyone in this network."
+  },
+  "no_peers": "Open Airdump on other devices to send files.",
+  "instructions": {
+    "desktop": "Click to send files or right click to send a message.",
+    "mobile": "Tap to send files or long tap to send a message."
+  },
+  "receive": {
+    "title": "File Received",
+    "filename": "Filename",
+    "filesize": "File Size",
+    "download": "Download",
+    "ignore": "Ignore"
+  },
+  "sendtext": {
+    "title": "Send a Message",
+    "placeholder": "Send a message",
+    "send": "Send",
+    "cancel": "Cancel"
+  },
+  "receivetext": {
+    "title": "Message Received",
+    "copy": "Copy",
+    "close": "Close"
+  },
+  "toast": {
+    "completed": "File Transfer Completed"
+  }
+}

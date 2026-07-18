@@ -1,0 +1,45 @@
+{
+  "about": {
+    "title": "Airdump",
+    "subtitle": "Der einfachste Weg, Dateien zwischen Geräten zu teilen.",
+    "github": "Airdump auf Github",
+    "donate": "Unterstütze Airdump",
+    "tweet": "Tweete über Airdump",
+    "faq": "Häufig gestellte Fragen"
+  },
+  "header": {
+    "about": "Über Airdump",
+    "notifications": "Benachrichtigungen aktivieren",
+    "install": "Airdump installieren"
+  },
+  "footer": {
+    "description": "Der einfachste Weg, Daten zwischen Geräten zu übertragen.",
+    "discovery": "Erlaube mir, entdeckt zu werden von: Allen in diesem Netzwerk."
+  },
+  "no_peers": "Öffne Airdump auf anderen Geräten, um Dateien zu senden.",
+  "instructions": {
+    "desktop": "Klicke, um Dateien zu senden oder verwende Rechtsklick für eine Nachricht.",
+    "mobile": "Tippe, um Dateien zu senden oder langes Tippen für eine Nachricht."
+  },
+  "receive": {
+    "title": "Datei erhalten",
+    "filename": "Dateiname",
+    "filesize": "Dateigröße",
+    "download": "Herunterladen",
+    "ignore": "Ignorieren"
+  },
+  "sendtext": {
+    "title": "Nachricht senden",
+    "placeholder": "Nachricht senden",
+    "send": "Senden",
+    "cancel": "Abbrechen"
+  },
+  "receivetext": {
+    "title": "Nachricht erhalten",
+    "copy": "Kopieren",
+    "close": "Schließen"
+  },
+  "toast": {
+    "completed": "Dateiübertragung abgeschlossen"
+  }
+}
