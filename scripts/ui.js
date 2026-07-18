@@ -222,7 +222,7 @@ class ReceiveDialog extends Dialog {
         super('receiveDialog');
         Events.on('file-received', e => {
             this._nextFile(e.detail);
-            window.blop.play();
+        window.blop.play().catch(() => {});
         });
         this._filesQueue = [];
     }
@@ -337,7 +337,7 @@ class ReceiveTextDialog extends Dialog {
             this.$text.textContent = text;
         }
         this.show();
-        window.blop.play();
+        window.blop.play().catch(() => {});
     }
 
     _onCopy() {
