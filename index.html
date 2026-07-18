@@ -221,12 +221,13 @@
                 } else {
                     try {
                         // Localization.setInitialTranslation is now static
-                        Localization.setInitialTranslation()
-                            .then(() => console.log('Airdump: localization ready'))
-                            .catch(err => console.warn('Airdump: localization error', err));
-                    } catch (e) {
-                        console.warn('Airdump: localization exception', e);
-                    }
+if (typeof Localization !== 'undefined' && typeof Localization.setInitialTranslation === 'function') {
+    Localization.setInitialTranslation()
+        .then(() => console.log('Airdump: localization ready'))
+        .catch(err => console.warn('Airdump: localization error', err));
+} else {
+    console.warn('Airdump: Localization not available – using English fallback');
+}
                 }
 
                 // Language dropdown toggle
