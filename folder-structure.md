@@ -12,7 +12,7 @@
 │ ├── 🖼️ logo_white_512x512.png
 │ ├── 🖼️ mstile-150x150.png
 │ ├── 🖼️ safari-pinned-tab.svg
-│ ├── 📄 snapdrop-graphics.sketch
+│ ├── 📄 airdump-graphics.sketch
 │ ├── 🖼️ twitter-stream.jpg
 ├── 📄 index.html
 ├── 📁 lang
