@@ -1,16 +1,24 @@
 {
   "about": {
     "title": "Airdump",
+    "title_title": "Airdump",
     "subtitle": "Der einfachste Weg, Dateien zwischen Geräten zu teilen.",
     "github": "Airdump auf Github",
+    "github_title": "Airdump auf Github",
     "donate": "Unterstütze Airdump",
+    "donate_title": "Unterstütze Airdump",
     "tweet": "Tweete über Airdump",
-    "faq": "Häufig gestellte Fragen"
+    "tweet_title": "Tweete über Airdump",
+    "faq": "Häufig gestellte Fragen",
+    "faq_title": "Häufig gestellte Fragen"
   },
   "header": {
     "about": "Über Airdump",
+    "about_title": "Über Airdump",
     "notifications": "Benachrichtigungen aktivieren",
-    "install": "Airdump installieren"
+    "notifications_title": "Benachrichtigungen aktivieren",
+    "install": "Airdump installieren",
+    "install_title": "Airdump installieren"
   },
   "footer": {
     "description": "Der einfachste Weg, Daten zwischen Geräten zu übertragen.",
@@ -23,23 +31,36 @@
   },
   "receive": {
     "title": "Datei erhalten",
+    "title_title": "Datei erhalten",
     "filename": "Dateiname",
+    "filename_text": "Dateiname",
     "filesize": "Dateigröße",
+    "filesize_text": "Dateigröße",
     "download": "Herunterladen",
-    "ignore": "Ignorieren"
+    "download_text": "Herunterladen",
+    "ignore": "Ignorieren",
+    "ignore_text": "Ignorieren"
   },
   "sendtext": {
     "title": "Nachricht senden",
+    "title_title": "Nachricht senden",
     "placeholder": "Nachricht senden",
+    "placeholder_placeholder": "Nachricht senden",
     "send": "Senden",
-    "cancel": "Abbrechen"
+    "send_text": "Senden",
+    "cancel": "Abbrechen",
+    "cancel_text": "Abbrechen"
   },
   "receivetext": {
     "title": "Nachricht erhalten",
+    "title_title": "Nachricht erhalten",
     "copy": "Kopieren",
-    "close": "Schließen"
+    "copy_text": "Kopieren",
+    "close": "Schließen",
+    "close_text": "Schließen"
   },
   "toast": {
-    "completed": "Dateiübertragung abgeschlossen"
+    "completed": "Dateiübertragung abgeschlossen",
+    "completed_text": "Dateiübertragung abgeschlossen"
   }
 }

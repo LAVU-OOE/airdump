@@ -1,16 +1,24 @@
 {
   "about": {
     "title": "Airdump",
+    "title_title": "Airdump",
     "subtitle": "The easiest way to transfer files across devices.",
     "github": "Airdump on Github",
+    "github_title": "Airdump on Github",
     "donate": "Contribute to keep Airdump free",
+    "donate_title": "Contribute to keep Airdump free",
     "tweet": "Tweet about Airdump",
-    "faq": "Frequently asked questions"
+    "tweet_title": "Tweet about Airdump",
+    "faq": "Frequently asked questions",
+    "faq_title": "Frequently asked questions"
   },
   "header": {
     "about": "About Airdump",
+    "about_title": "About Airdump",
     "notifications": "Enable Notifications",
-    "install": "Install Airdump"
+    "notifications_title": "Enable Notifications",
+    "install": "Install Airdump",
+    "install_title": "Install Airdump"
   },
   "footer": {
     "description": "The easiest way to transfer data across devices.",
@@ -23,23 +31,36 @@
   },
   "receive": {
     "title": "File Received",
+    "title_title": "File Received",
     "filename": "Filename",
+    "filename_text": "Filename",
     "filesize": "File Size",
+    "filesize_text": "File Size",
     "download": "Download",
-    "ignore": "Ignore"
+    "download_text": "Download",
+    "ignore": "Ignore",
+    "ignore_text": "Ignore"
   },
   "sendtext": {
     "title": "Send a Message",
+    "title_title": "Send a Message",
     "placeholder": "Send a message",
+    "placeholder_placeholder": "Send a message",
     "send": "Send",
-    "cancel": "Cancel"
+    "send_text": "Send",
+    "cancel": "Cancel",
+    "cancel_text": "Cancel"
   },
   "receivetext": {
     "title": "Message Received",
+    "title_title": "Message Received",
     "copy": "Copy",
-    "close": "Close"
+    "copy_text": "Copy",
+    "close": "Close",
+    "close_text": "Close"
   },
   "toast": {
-    "completed": "File Transfer Completed"
+    "completed": "File Transfer Completed",
+    "completed_text": "File Transfer Completed"
   }
 }
