@@ -431,8 +431,8 @@
             }
         }
 
-        // -------- Airdump --------
-        class Airdump {
+        // -------- reDrop --------
+        class reDrop {
             constructor() {
                 const server = new ServerConnection();
                 const peers = new PeersManager(server);
@@ -450,7 +450,7 @@
         }
 
         // -------- Instantiate --------
-        const airdump = new Airdump();
+        const redrop = new reDrop();
 
         // -------- document.copy helper --------
         document.copy = text => {

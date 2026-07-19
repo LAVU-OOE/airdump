@@ -217,13 +217,13 @@ class Localization {
     }
 
     static logHelpCall() {
-        console.log("Help translating Airdump: https://hosted.weblate.org/engage/Airdump/");
+        console.log("Help translating redrop: https://hosted.weblate.org/engage/redrop/");
     }
 
     static logHelpCallKey(key, attr) {
         let locale = Localization.locale ? Localization.locale.toLowerCase() : 'en';
         let keyComplete = !attr || attr === "text" ? key : `${key}_${attr}`;
-        console.warn(`Translate this string here: https://hosted.weblate.org/browse/Airdump/Airdump-spa/${locale}/?q=${keyComplete}`);
+        console.warn(`Translate this string here: https://hosted.weblate.org/browse/redrop/redrop-spa/${locale}/?q=${keyComplete}`);
     }
 
     static escapeHTML(unsafeText) {

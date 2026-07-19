@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Airdump</title>
+    <title>Re:Drop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     
     <meta name="theme-color" content="#048161">
@@ -24,7 +24,7 @@
     <meta name="msapplication-TileImage" content="images/mstile-150x150.png">
     
     <meta name="apple-mobile-web-app-capable" content="no">
-    <meta name="apple-mobile-web-app-title" content="Airdump">
+    <meta name="apple-mobile-web-app-title" content="Re:Drop">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <link rel="icon" sizes="96x96" href="images/favicon-96x96.png">
@@ -48,13 +48,13 @@
             <a href="#" data-lang="de">Deutsch</a>
         </div>
 
-        <a href="#about" class="icon-button" data-i18n-key="header.about" data-i18n-attrs="title" title="About Airdump">
+        <a href="#about" class="icon-button" data-i18n-key="header.about" data-i18n-attrs="title" title="About Re:Drop">
             <svg class="icon"><use xlink:href="#info-outline" /></svg>
         </a>
         <a href="#" id="notification" class="icon-button" data-i18n-key="header.notifications" data-i18n-attrs="title" title="Enable Notifications" hidden>
             <svg class="icon"><use xlink:href="#notifications" /></svg>
         </a>
-        <a href="#" id="install" class="icon-button" data-i18n-key="header.install" data-i18n-attrs="title" title="Install Airdump" hidden>
+        <a href="#" id="install" class="icon-button" data-i18n-key="header.install" data-i18n-attrs="title" title="Install Re:Drop" hidden>
             <svg class="icon"><use xlink:href="#homescreen" /></svg>
         </a>
     </header>
@@ -62,7 +62,7 @@
     <!-- ===== PEERS ===== -->
     <x-peers class="center"></x-peers>
     <x-no-peers>
-        <h2 data-i18n-key="no_peers" data-i18n-attrs="text">Open Airdump on other devices to send files.</h2>
+        <h2 data-i18n-key="no_peers" data-i18n-attrs="text">Open Re:Drop on other devices to send files.</h2>
     </x-no-peers>
     <x-instructions desktop="Click to send files or right click to send a message." mobile="Tap to send files or long tap to send a message." data-i18n-key="instructions" data-i18n-attrs="desktop mobile">
     </x-instructions>
@@ -133,19 +133,19 @@
                 </a>
             </header>
             <svg class="icon logo"><use xlink:href="#wifi-tethering" /></svg>
-            <h1 data-i18n-key="about.title" data-i18n-attrs="text">Airdump</h1>
+            <h1 data-i18n-key="about.title" data-i18n-attrs="text">Re:Drop</h1>
             <div class="font-subheading" data-i18n-key="about.subtitle" data-i18n-attrs="text">The easiest way to transfer files across devices.</div>
             <div class="row">
-                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/airdump" data-i18n-key="about.github" data-i18n-attrs="title" title="Airdump on Github" rel="noreferrer">
+                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/redrop" data-i18n-key="about.github" data-i18n-attrs="title" title="Re:Drop on Github" rel="noreferrer">
                     <svg class="icon"><use xlink:href="#github" /></svg>
                 </a>
-                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/airdump#support-the-airdump-community" data-i18n-key="about.donate" data-i18n-attrs="title" title="Contribute to keep Airdump free" rel="noreferrer">
+                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/redrop#support-the-redrop-community" data-i18n-key="about.donate" data-i18n-attrs="title" title="Contribute to keep Re:Drop free" rel="noreferrer">
                     <svg class="icon"><use xlink:href="#donation" /></svg>
                 </a>
-                <a class="icon-button" target="_blank" href="https://twitter.com/intent/tweet?text=https://your-domain.com%20by%20@robin_linus%20&" data-i18n-key="about.tweet" data-i18n-attrs="title" title="Tweet about Airdump" rel="noreferrer">
+                <a class="icon-button" target="_blank" href="https://twitter.com/intent/tweet?text=https://your-domain.com%20by%20@robin_linus%20&" data-i18n-key="about.tweet" data-i18n-attrs="title" title="Tweet about Re:Drop" rel="noreferrer">
                     <svg class="icon"><use xlink:href="#x-twitter" /></svg>
                 </a>
-                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/airdump#frequently-asked-questions" data-i18n-key="about.faq" data-i18n-attrs="title" title="Frequently asked questions" rel="noreferrer">
+                <a class="icon-button" target="_blank" href="https://github.com/LAVU-OOE/redrop#frequently-asked-questions" data-i18n-key="about.faq" data-i18n-attrs="title" title="Frequently asked questions" rel="noreferrer">
                     <svg class="icon"><use xlink:href="#help-outline" /></svg>
                 </a>
             </div>
@@ -202,7 +202,7 @@
     <!-- ===== SCRIPTS ===== -->
     <script>
         // WebSocket URL for your Cloudflare Worker
-        window.WEBSOCKET_URL = 'wss://airdump-api.lavu-ooe.workers.dev';
+        window.WEBSOCKET_URL = 'wss://redrop-api.lavu-ooe.workers.dev';
     </script>
 
     <!-- Load dependencies in order -->
@@ -216,23 +216,23 @@
             function init() {
                 // Check Events (from network.js)
                 if (typeof Events === 'undefined') {
-                    console.warn('Airdump: network.js not loaded – retrying in 500ms');
+                    console.warn('Re:Drop: network.js not loaded – retrying in 500ms');
                     setTimeout(init, 500);
                     return;
                 }
 
                 // Check Localization – it auto‑inits when loaded
                 if (typeof Localization === 'undefined') {
-                    console.warn('Airdump: localization.js not loaded – using fallback');
+                    console.warn('Re:Drop: localization.js not loaded – using fallback');
                     // Continue without translation
                 } else {
                     try {
                         // Localization.init() already called, so now set translations
                         Localization.setInitialTranslation()
-                            .then(() => console.log('Airdump: localization ready'))
-                            .catch(err => console.warn('Airdump: localization error', err));
+                            .then(() => console.log('Re:Drop: localization ready'))
+                            .catch(err => console.warn('Re:Drop: localization error', err));
                     } catch (e) {
-                        console.warn('Airdump: localization exception', e);
+                        console.warn('Re:Drop: localization exception', e);
                     }
                 }
 
@@ -260,7 +260,7 @@
                     });
                 }
 
-                console.log('Airdump: initialized successfully');
+                console.log('Re:Drop: initialized successfully');
             }
 
             if (document.readyState === 'loading') {
@@ -307,7 +307,7 @@
     <noscript>
         <x-noscript class="full center column">
             <h1>Enable Javascript</h1>
-            <h3>Airdump works only with Javascript.</h3>
+            <h3>Re:Drop works only with Javascript.</h3>
         </x-noscript>
         <style>
             x-noscript {

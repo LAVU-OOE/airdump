@@ -1,4 +1,4 @@
-const CACHE_NAME = 'airdump-cache-v1.0';
+const CACHE_NAME = 'redrop-cache-v1.0';
 const urlsToCache = [
   './',
   './styles.css',
@@ -44,8 +44,8 @@ self.addEventListener('activate', function(event) {
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.map(function(cacheName) {
-          // Delete only caches that belong to this app (start with 'airdump-cache-')
-          if (cacheName.startsWith('airdump-cache-') && cacheName !== CACHE_NAME) {
+          // Delete only caches that belong to this app (start with 'redrop-cache-')
+          if (cacheName.startsWith('redrop-cache-') && cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }
         })
