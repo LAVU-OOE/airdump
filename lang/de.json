@@ -2,16 +2,14 @@
     "header": {
         "about": "Über Re:Drop",
         "about_title": "Über Re:Drop",
-        "notifications": "Benachrichtigungen aktivieren",
+        "notifications": "Benachrichtigungen",
         "notifications_title": "Benachrichtigungen aktivieren",
-        "install": "Re:Drop installieren",
+        "install": "Installieren",
         "install_title": "Re:Drop installieren"
     },
     "no_peers": "Öffne Re:Drop auf anderen Geräten, um Dateien zu senden.",
-    "instructions": {
-        "desktop": "Klicken, um Dateien zu senden, oder Rechtsklick für eine Nachricht.",
-        "mobile": "Tippen, um Dateien zu senden, oder lange tippen für eine Nachricht."
-    },
+    "instructions_desktop": "Klicken, um Dateien zu senden, oder Rechtsklick für eine Nachricht.",
+    "instructions_mobile": "Tippen, um Dateien zu senden, oder lange tippen für eine Nachricht.",
     "footer": {
         "description": "Der einfachste Weg, Daten zwischen Geräten auszutauschen.",
         "discovery": "Erlaube mir, von folgenden gefunden zu werden: Allen in diesem Netzwerk."
@@ -41,13 +39,13 @@
     "about": {
         "title": "Re:Drop",
         "subtitle": "Der einfachste Weg, Dateien zwischen Geräten auszutauschen.",
-        "github": "Re:Drop auf Github",
-        "github_title": "Re:Drop auf Github",
-        "donate": "Unterstütze Re:Drop und halte es kostenlos",
+        "github": "GitHub",
+        "github_title": "Re:Drop auf GitHub",
+        "donate": "Spenden",
         "donate_title": "Unterstütze Re:Drop und halte es kostenlos",
-        "tweet": "Über Re:Drop twittern",
+        "tweet": "Tweeten",
         "tweet_title": "Über Re:Drop twittern",
-        "faq": "Häufig gestellte Fragen",
+        "faq": "FAQ",
         "faq_title": "Häufig gestellte Fragen"
     }
 }

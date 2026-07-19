@@ -141,10 +141,19 @@ class Localization {
 
         attrsArray.forEach(attr => {
             let translationKey = key;
+            // For non‑text attributes, append "_attr"
             if (attr !== "text") {
-                translationKey = key + "." + attr;  // use dot to access nested object
+                translationKey = key + "_" + attr;
             }
-            const translation = Localization.getTranslation(translationKey);
+            // Try to get translation, fallback to base key if suffixed is missing
+            let translation;
+            try {
+                translation = Localization.getTranslation(translationKey);
+            } catch (e) {
+                // If suffixed key fails, try the base key (for attributes like title, placeholder)
+                console.warn(`Suffixed key "${translationKey}" not found, falling back to "${key}"`);
+                translation = Localization.getTranslation(key);
+            }
             if (attr === "text") {
                 element.innerText = translation;
             } else {

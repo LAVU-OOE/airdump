@@ -2,16 +2,14 @@
     "header": {
         "about": "About Re:Drop",
         "about_title": "About Re:Drop",
-        "notifications": "Enable Notifications",
+        "notifications": "Notifications",
         "notifications_title": "Enable Notifications",
-        "install": "Install Re:Drop",
+        "install": "Install",
         "install_title": "Install Re:Drop"
     },
     "no_peers": "Open Re:Drop on other devices to send files.",
-    "instructions": {
-        "desktop": "Click to send files or right click to send a message.",
-        "mobile": "Tap to send files or long tap to send a message."
-    },
+    "instructions_desktop": "Click to send files or right click to send a message.",
+    "instructions_mobile": "Tap to send files or long tap to send a message.",
     "footer": {
         "description": "The easiest way to transfer data across devices.",
         "discovery": "Allow me to be discovered by: Everyone in this network."
@@ -41,13 +39,13 @@
     "about": {
         "title": "Re:Drop",
         "subtitle": "The easiest way to transfer files across devices.",
-        "github": "Re:Drop on Github",
-        "github_title": "Re:Drop on Github",
-        "donate": "Contribute to keep Re:Drop free",
+        "github": "GitHub",
+        "github_title": "Re:Drop on GitHub",
+        "donate": "Donate",
         "donate_title": "Contribute to keep Re:Drop free",
-        "tweet": "Tweet about Re:Drop",
+        "tweet": "Tweet",
         "tweet_title": "Tweet about Re:Drop",
-        "faq": "Frequently asked questions",
+        "faq": "FAQ",
         "faq_title": "Frequently asked questions"
     }
 }
