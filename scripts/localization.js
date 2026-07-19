@@ -136,35 +136,35 @@ class Localization {
     static async translateElement(element) {
         const key = element.getAttribute("data-i18n-key");
         let attrs = element.getAttribute("data-i18n-attrs");
-        if (!attrs) attrs = "text"; // default fallback
+        if (!attrs) attrs = "text";
         const attrsArray = attrs.split(" ");
 
         attrsArray.forEach(attr => {
+            // Always use the same key – no suffix
+            const translation = Localization.getTranslation(key);
             if (attr === "text") {
-                element.innerText = Localization.getTranslation(key);
+                element.innerText = translation;
             } else {
-                element.setAttribute(attr, Localization.getTranslation(key, attr));
+                element.setAttribute(attr, translation);
             }
         });
     }
 
-    static getTranslationFromTranslationsObj(translationObj, key, attr) {
+    static getTranslationFromTranslationsObj(translationObj, key) {
         let translation;
         try {
             const keys = key.split(".");
             let obj = translationObj;
-            for (let i = 0; i < keys.length - 1; i++) {
+            for (let i = 0; i < keys.length; i++) {
                 obj = obj[keys[i]];
                 if (!obj) throw new Error(`Missing translation object for key part: ${keys[i]}`);
             }
-            let lastKey = keys[keys.length - 1];
-            if (attr) lastKey += "_" + attr;
-            translation = obj[lastKey];
+            translation = obj;
         } catch (e) {
             console.error(e);
         }
         if (!translation) {
-            throw new Error(`Translation misses entry. Key: ${key} Attribute: ${attr}`);
+            throw new Error(`Translation misses entry. Key: ${key}`);
         }
         return translation;
     }
@@ -187,7 +187,7 @@ class Localization {
         let translation;
 
         try {
-            translation = Localization.getTranslationFromTranslationsObj(translationObj, key, attr);
+            translation = Localization.getTranslationFromTranslationsObj(translationObj, key);
             translation = Localization.addDataToTranslation(translation, data);
         } catch (e) {
             console.warn(e);
@@ -219,8 +219,7 @@ class Localization {
 
     static logHelpCallKey(key, attr) {
         let locale = Localization.locale ? Localization.locale.toLowerCase() : 'en';
-        let keyComplete = !attr || attr === "text" ? key : `${key}_${attr}`;
-        console.warn(`Translate this string here: https://hosted.weblate.org/browse/redrop/redrop-spa/${locale}/?q=${keyComplete}`);
+        console.warn(`Translate this string here: https://hosted.weblate.org/browse/redrop/redrop-spa/${locale}/?q=${key}`);
     }
 
     static escapeHTML(unsafeText) {
