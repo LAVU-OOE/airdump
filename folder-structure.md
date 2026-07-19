@@ -1,4 +1,5 @@
 ```
+├── 📄 CNAME
 ├── 📜 folder-structure.md
 ├── 📁 images
 │ ├── 🖼️ android-chrome-192x192.png
@@ -31,5 +32,7 @@
 │ ├── 📄 blop.mp3
 │ ├── 📄 blop.ogg
 ├── 🎨 styles.css
+├── 🟨 worker.js
+├── 📄 wrangler.toml
 
 ```
