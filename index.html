@@ -44,8 +44,7 @@
             <svg class="icon"><use xlink:href="#icon-language-selector" /></svg>
         </a>
         <div id="languageDropdown" class="dropdown" style="display:none;">
-            <a href="#" data-lang="en">English</a>
-            <a href="#" data-lang="de">Deutsch</a>
+            <!-- Will be populated dynamically by JavaScript -->
         </div>
 
         <a href="#about" class="icon-button" data-i18n-key="header.about" data-i18n-attrs="title" title="About Re:Drop">
@@ -227,7 +226,6 @@
                     // Continue without translation
                 } else {
                     try {
-                        // Localization.init() already called, so now set translations
                         Localization.setInitialTranslation()
                             .then(() => console.log('Re:Drop: localization ready'))
                             .catch(err => console.warn('Re:Drop: localization error', err));
@@ -236,15 +234,19 @@
                     }
                 }
 
-                // Language dropdown toggle
-                var selector = document.getElementById('languageSelector');
+                // Language dropdown – populate dynamically
                 var dropdown = document.getElementById('languageDropdown');
-                if (selector && dropdown) {
-                    selector.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                    });
-                    dropdown.querySelectorAll('a').forEach(function(link) {
+                if (dropdown && typeof Localization !== 'undefined') {
+                    // Clear default links
+                    dropdown.innerHTML = '';
+                    // Use all supported locales
+                    Localization.supportedLocales.forEach(function(lang) {
+                        var link = document.createElement('a');
+                        link.href = '#';
+                        link.setAttribute('data-lang', lang);
+                        // Display name: maybe use a mapping or just the code
+                        // For simplicity, we'll show the code
+                        link.textContent = lang;
                         link.addEventListener('click', function(e) {
                             e.preventDefault();
                             var lang = this.getAttribute('data-lang');
@@ -257,6 +259,16 @@
                                 location.reload();
                             }
                         });
+                        dropdown.appendChild(link);
+                    });
+                }
+
+                // Language dropdown toggle
+                var selector = document.getElementById('languageSelector');
+                if (selector && dropdown) {
+                    selector.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
                     });
                 }
 
@@ -283,6 +295,8 @@
             padding: 8px 0;
             z-index: 100;
             min-width: 120px;
+            max-height: 300px;
+            overflow-y: auto;
         }
         #languageDropdown a {
             display: block;

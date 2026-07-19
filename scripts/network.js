@@ -71,6 +71,7 @@ class ServerConnection {
         if (this._socket) {
             this._socket.onclose = null;
             this._socket.close();
+            this._socket = null;
         }
     }
 
@@ -211,9 +212,9 @@ class Peer {
 
     _onTransferCompleted() {
         this._onDownloadProgress(1);
-        this._reader = null;
+        this._digester = null;
         this._busy = false;
-        // 🔥 ROOT FIX: Warteschlange leeren, damit bei einem versehentlichen Reconnect nichts erneut gesendet wird
+        // Clear queue to avoid resending on accidental reconnect
         this._filesQueue = [];
         this._dequeueFile();
         Events.fire('notify-user', 'File transfer completed.');
@@ -301,11 +302,11 @@ class RTCPeer extends Peer {
     _onChannelClosed() {
         console.log('RTC: channel closed', this._peerId);
         if (!this._isCaller) return;
-        // 🔥 ROOT FIX: Kein Reconnect, wenn gerade eine Datei übertragen wird oder noch in der Warteschlange liegt
         if (this._busy || (this._filesQueue && this._filesQueue.length > 0)) {
             console.log('[FIX] Reconnect suppressed - transfer still active or queued.');
             return;
         }
+        this._channel = null;
         this._connect(this._peerId, true);
     }
 
@@ -337,7 +338,10 @@ class RTCPeer extends Peer {
     }
 
     _send(message) {
-        if (!this._channel) return this.refresh();
+        if (!this._channel) {
+            this.refresh();
+            return;
+        }
         this._channel.send(message);
     }
 
@@ -408,9 +412,15 @@ class PeersManager {
 
     _onPeerLeft(peerId) {
         const peer = this.peers[peerId];
+        if (!peer) return;
         delete this.peers[peerId];
-        if (!peer || !peer._peer) return;
-        peer._peer.close();
+        // Properly close WebRTC connection
+        if (peer._conn) {
+            peer._conn.close();
+        } else if (peer._channel) {
+            peer._channel.close();
+        }
+        // For WSPeer, nothing to close
     }
 }
 
@@ -427,7 +437,6 @@ class WSPeer {
     }
 
     sendFiles(files) {
-        // Not implemented for fallback – uses WebRTC only for file transfer
         console.warn('WSPeer does not support file transfer');
     }
 
@@ -494,6 +503,7 @@ class FileDigester {
         this._mime = meta.mime || 'application/octet-stream';
         this._name = meta.name;
         this._callback = callback;
+        this.progress = 0;
     }
 
     unchunk(chunk) {
@@ -527,7 +537,6 @@ RTCPeer.config = {
     'iceServers': [
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
-        // Free TURN servers (Metered.ca – reliable for testing)
         {
             urls: 'turn:openrelay.metered.ca:80',
             username: 'openrelayproject',

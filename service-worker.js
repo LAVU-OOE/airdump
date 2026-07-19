@@ -1,4 +1,4 @@
-const CACHE_NAME = 'redrop-cache-v1.0';
+const CACHE_NAME = 'redrop-cache-v1.1';
 const urlsToCache = [
   './',
   './styles.css',
@@ -9,7 +9,12 @@ const urlsToCache = [
   './lang/en.json',
   './lang/de.json',
   './sounds/blop.mp3',
-  './images/favicon-96x96.png'
+  './sounds/blop.ogg',
+  './images/favicon-96x96.png',
+  './images/apple-touch-icon.png',
+  './images/mstile-150x150.png',
+  './images/android-chrome-192x192.png',
+  './images/logo_transparent_512x512.png'
 ];
 
 self.addEventListener('install', function(event) {
@@ -20,7 +25,6 @@ self.addEventListener('install', function(event) {
         return cache.addAll(urlsToCache);
       })
       .then(function() {
-        // Force activation
         return self.skipWaiting();
       })
   );
@@ -44,7 +48,6 @@ self.addEventListener('activate', function(event) {
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.map(function(cacheName) {
-          // Delete only caches that belong to this app (start with 'redrop-cache-')
           if (cacheName.startsWith('redrop-cache-') && cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }

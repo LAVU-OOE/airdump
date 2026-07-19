@@ -5,9 +5,9 @@ export default {
             return new Response('Not found', { status: 404 });
         }
 
-        const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-        const roomId = env.ROOM.idFromName(ip);
-        const room = env.ROOM.get(roomId);
+        // 🔥 FIX: Use a fixed room ID so that ALL visitors see each other
+        const roomId = 'global';
+        const room = env.ROOM.get(env.ROOM.idFromName(roomId));
         return room.fetch(request);
     }
 };
@@ -43,8 +43,7 @@ export class Room {
         const ua = request.headers.get('User-Agent') || '';
         const name = this.generateName(ua);
 
-        // Include avatar (empty by default)
-        const peerInfo = { id: peerId, name, rtcSupported }; 
+        const peerInfo = { id: peerId, name, rtcSupported };
 
         this.peers.set(peerId, {
             ws,
@@ -90,7 +89,6 @@ export class Room {
                 peer.lastBeat = Date.now();
                 break;
             case 'avatar':
-                // Store avatar and broadcast to all other peers
                 peer.info.avatar = message.avatar;
                 this.broadcast({ type: 'peer-avatar', peerId, avatar: message.avatar });
                 break;

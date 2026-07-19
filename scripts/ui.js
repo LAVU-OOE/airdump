@@ -1,5 +1,4 @@
 (function() {
-    // Wait until Events is defined (from network.js)
     function initUI() {
         if (typeof Events === 'undefined') {
             console.warn('ui.js: waiting for Events...');
@@ -7,7 +6,6 @@
             return;
         }
 
-        // ---------- UI code starts ----------
         const $ = query => document.getElementById(query);
         const $$ = query => document.body.querySelector(query);
         const isURL = text => /^((https?:\/\/|www)[^\s]+)/g.test(text.toLowerCase());
@@ -15,7 +13,6 @@
         window.isProductionEnvironment = !window.location.host.startsWith('localhost');
         window.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-        // set display name
         Events.on('displayName', e => {
             $("displayName").textContent = "You are known as " + e.detail.message;
         });
@@ -87,7 +84,7 @@
                         </div>
                         <div class="name font-subheading"></div>
                         <div class="status font-body2"></div>
-                    </label>`
+                    </label>`;
             }
 
             constructor(peer) {
@@ -205,7 +202,7 @@
         class Dialog {
             constructor(id) {
                 this.$el = $(id);
-                this.$el.querySelectorAll('[close]').forEach(el => el.addEventListener('click', e => this.hide()))
+                this.$el.querySelectorAll('[close]').forEach(el => el.addEventListener('click', e => this.hide()));
                 this.$autoFocus = this.$el.querySelector('[autofocus]');
             }
 
@@ -227,20 +224,24 @@
                 super('receiveDialog');
                 Events.on('file-received', e => {
                     this._nextFile(e.detail);
-                    window.blop.play().catch(() => {}); // ✅ audio fix
+                    window.blop.play().catch(() => {});
                 });
                 this._filesQueue = [];
                 this._lastFileKey = null;
+                this._recentKeys = new Set(); // prevent duplicates for a short time
             }
 
             _nextFile(nextFile) {
                 if (nextFile) {
                     const key = nextFile.name + nextFile.size;
-                    if (this._lastFileKey === key) {
+                    // Ignore if recently seen (within 5 seconds)
+                    if (this._recentKeys.has(key)) {
                         console.log('[FIX] Duplicate file ignored - no popup flood.');
                         return;
                     }
-                    this._lastFileKey = key;
+                    this._recentKeys.add(key);
+                    // Remove key after 5 seconds to allow re‑receive (e.g., after ignore)
+                    setTimeout(() => this._recentKeys.delete(key), 5000);
                     this._filesQueue.push(nextFile);
                 }
                 if (this._busy) return;
@@ -265,6 +266,8 @@
                 const url = URL.createObjectURL(file.blob);
                 $a.href = url;
                 $a.download = file.name;
+                // Store URL to revoke later
+                this._currentUrl = url;
 
                 this.$el.querySelector('#fileName').textContent = file.name;
                 this.$el.querySelector('#fileSize').textContent = this._formatFileSize(file.size);
@@ -273,7 +276,11 @@
                 if (window.isDownloadSupported) return;
                 $a.target = '_blank';
                 const reader = new FileReader();
-                reader.onload = e => $a.href = reader.result;
+                reader.onload = e => {
+                    $a.href = reader.result;
+                    // Revoke blob URL now as we have data URL
+                    URL.revokeObjectURL(url);
+                };
                 reader.readAsDataURL(file.blob);
             }
 
@@ -291,6 +298,11 @@
 
             hide() {
                 super.hide();
+                // Revoke object URL to free memory
+                if (this._currentUrl) {
+                    URL.revokeObjectURL(this._currentUrl);
+                    this._currentUrl = null;
+                }
                 this._dequeueFile();
             }
         }
@@ -299,7 +311,7 @@
         class SendTextDialog extends Dialog {
             constructor() {
                 super('sendTextDialog');
-                Events.on('text-recipient', e => this._onRecipient(e.detail))
+                Events.on('text-recipient', e => this._onRecipient(e.detail));
                 this.$text = this.$el.querySelector('#textInput');
                 const button = this.$el.querySelector('form');
                 button.addEventListener('submit', e => this._send(e));
@@ -309,7 +321,7 @@
                 this._recipient = recipient;
                 this._handleShareTargetText();
                 this.show();
-                this.$text.setSelectionRange(0, this.$text.value.length)
+                this.$text.setSelectionRange(0, this.$text.value.length);
             }
 
             _handleShareTargetText() {
@@ -324,6 +336,7 @@
                     to: this._recipient,
                     text: this.$text.value
                 });
+                this.hide();
             }
         }
 
@@ -331,7 +344,7 @@
         class ReceiveTextDialog extends Dialog {
             constructor() {
                 super('receiveTextDialog');
-                Events.on('text-received', e => this._onText(e.detail))
+                Events.on('text-received', e => this._onText(e.detail));
                 this.$text = this.$el.querySelector('#text');
                 const $copy = this.$el.querySelector('#copy');
                 $copy.addEventListener('click', _ => this._onCopy());
@@ -363,38 +376,34 @@
         class Toast extends Dialog {
             constructor() {
                 super('toast');
-                Events.on('notify-user', e => this._onNotfiy(e.detail));
+                Events.on('notify-user', e => this._onNotify(e.detail));
             }
 
-            _onNotfiy(message) {
+            _onNotify(message) {
                 this.$el.textContent = message;
                 this.show();
-                setTimeout(_ => this.hide(), 3000);
+                clearTimeout(this._toastTimer);
+                this._toastTimer = setTimeout(_ => this.hide(), 3000);
             }
         }
 
         // ============================================================
-        // 🔥 NEU: Benachrichtigungen OHNE Browser‑Blockade
-        // – Immer Toast verwenden, keine Notification.requestPermission
+        // NEW: Notifications WITHOUT browser permission – always use toast
         // ============================================================
         class Notifications {
             constructor() {
-                // Keine Berechtigungsanfrage, kein Button, kein Block – nur Toasts
                 Events.on('text-received', e => this._messageNotification(e.detail.text));
                 Events.on('file-received', e => this._downloadNotification(e.detail.name));
             }
 
             _messageNotification(message) {
-                // Zeige die Nachricht als Toast (In‑App)
                 Events.fire('notify-user', message);
             }
 
-            _downloadNotification(message) {
-                // Zeige den Dateinamen als Toast
-                Events.fire('notify-user', '📥 Datei empfangen: ' + message);
+            _downloadNotification(name) {
+                Events.fire('notify-user', '📥 File received: ' + name);
             }
         }
-        // ============================================================
 
         // -------- NetworkStatusUI --------
         class NetworkStatusUI {
@@ -442,7 +451,7 @@
                     const sendTextDialog = new SendTextDialog();
                     const receiveTextDialog = new ReceiveTextDialog();
                     const toast = new Toast();
-                    const notifications = new Notifications(); // ← keine Browser‑Blockade mehr
+                    const notifications = new Notifications();
                     const networkStatusUI = new NetworkStatusUI();
                     const webShareTargetUI = new WebShareTargetUI();
                 });
@@ -479,14 +488,14 @@
             span.remove();
 
             return success;
-        }
+        };
 
         // -------- Service Worker registration --------
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
                 .then(serviceWorker => {
                     console.log('Service Worker registered');
-                    window.serviceWorker = serviceWorker
+                    window.serviceWorker = serviceWorker;
                 });
         }
 
@@ -495,7 +504,7 @@
             if (window.matchMedia('(display-mode: standalone)').matches) {
                 return e.preventDefault();
             } else {
-                const btn = document.querySelector('#install')
+                const btn = document.querySelector('#install');
                 btn.hidden = false;
                 btn.onclick = _ => e.prompt();
                 return e.preventDefault();
@@ -565,6 +574,5 @@
         console.log('ui.js: initialized successfully');
     }
 
-    // Start waiting for Events
     initUI();
 })();

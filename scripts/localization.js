@@ -8,12 +8,11 @@ class Localization {
     static supportedLocalesRtl = ["ar", "he"];
     static translations = {};
     static translationsDefaultLocale = {};
-    static locale = null;          // currently active locale
-    static systemLocale = null;    // browser's best match
-    static initialLocale = null;   // saved or system locale
+    static locale = null;
+    static systemLocale = null;
+    static initialLocale = null;
     static $htmlRoot = null;
 
-    // Initialize static properties (call this once)
     static init() {
         Localization.$htmlRoot = document.querySelector('html');
         if (!Localization.$htmlRoot) {
@@ -21,7 +20,6 @@ class Localization {
             Localization.$htmlRoot = document.documentElement;
         }
 
-        // Get browser languages (fallback to ['en'])
         const languages = navigator.languages || [navigator.language || 'en'];
         Localization.systemLocale = Localization.getSupportedOrDefaultLocales(languages);
 
@@ -30,7 +28,6 @@ class Localization {
             ? storedLanguageCode
             : Localization.systemLocale;
 
-        // Set default locale for translation fallback
         Localization.locale = Localization.initialLocale;
         console.log('Localization initialized. System:', Localization.systemLocale, 'Initial:', Localization.initialLocale);
     }
@@ -67,13 +64,11 @@ class Localization {
 
     static async setTranslation(locale) {
         if (!locale) locale = Localization.systemLocale;
-        // Prevent re-fetch if same locale and we already have translations
         if (locale === Localization.locale && Object.keys(Localization.translations).length > 0) {
             return;
         }
         const success = await Localization.fetchTranslations(locale);
         if (!success) {
-            // If fetch fails, try default locale
             console.warn('Failed to fetch translations for', locale, '– falling back to', Localization.defaultLocale);
             await Localization.fetchTranslations(Localization.defaultLocale);
             locale = Localization.defaultLocale;
@@ -140,9 +135,11 @@ class Localization {
 
     static async translateElement(element) {
         const key = element.getAttribute("data-i18n-key");
-        const attrs = element.getAttribute("data-i18n-attrs").split(" ");
+        let attrs = element.getAttribute("data-i18n-attrs");
+        if (!attrs) attrs = "text"; // default fallback
+        const attrsArray = attrs.split(" ");
 
-        attrs.forEach(attr => {
+        attrsArray.forEach(attr => {
             if (attr === "text") {
                 element.innerText = Localization.getTranslation(key);
             } else {
@@ -173,12 +170,12 @@ class Localization {
     }
 
     static addDataToTranslation(translation, data) {
-        for (let j in data) {
+        Object.keys(data).forEach(j => {
             if (!translation.includes(`{{${j}}}`)) {
                 throw new Error(`Translation misses data placeholder: ${j}`);
             }
             translation = translation.replace(`{{${j}}}`, data[j]);
-        }
+        });
         return translation;
     }
 
@@ -233,5 +230,4 @@ class Localization {
     }
 }
 
-// Auto‑init when script loads
 Localization.init();
