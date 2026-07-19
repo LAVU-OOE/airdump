@@ -136,13 +136,14 @@ class Localization {
     static async translateElement(element) {
         const key = element.getAttribute("data-i18n-key");
         let attrs = element.getAttribute("data-i18n-attrs");
-        if (!attrs) attrs = "text";
+        if (!attrs) attrs = "text"; // default fallback
         const attrsArray = attrs.split(" ");
 
         attrsArray.forEach(attr => {
             let translationKey = key;
+            // Append attribute suffix unless it's "text"
             if (attr !== "text") {
-                translationKey = key + "." + attr;  // use dot to access nested object
+                translationKey = key + "_" + attr;
             }
             const translation = Localization.getTranslation(translationKey);
             if (attr === "text") {
